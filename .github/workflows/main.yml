@@ -1,0 +1,23 @@
+# .github/workflows/sync-upstream.yml
+name: Sync fork with upstream
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: australia
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync with upstream
+        run: |
+          git remote add upstream https://github.com/ServiceNow/ServiceNowDocs.git
+          git fetch upstream australia
+          git reset --hard upstream/australia
+          git push origin australia --force
